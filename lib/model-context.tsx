@@ -57,11 +57,10 @@ const ModelContext = createContext<ModelContextType | undefined>(undefined);
 
 export function ModelProvider({ children }: { children: ReactNode }) {
   const [selectedModel, setSelectedModel] = useState<Model>(FREE_MODELS[0]);
-  const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
-    setIsClient(true);
     const saved = localStorage.getItem('selectedModel');
     if (saved) {
       try {
@@ -71,16 +70,13 @@ export function ModelProvider({ children }: { children: ReactNode }) {
         // Use default
       }
     }
+    setMounted(true);
   }, []);
 
   const handleSetSelectedModel = (model: Model) => {
     setSelectedModel(model);
     localStorage.setItem('selectedModel', JSON.stringify(model));
   };
-
-  if (!isClient) {
-    return <>{children}</>;
-  }
 
   return (
     <ModelContext.Provider value={{ selectedModel, setSelectedModel: handleSetSelectedModel }}>
@@ -92,7 +88,11 @@ export function ModelProvider({ children }: { children: ReactNode }) {
 export function useModel() {
   const context = useContext(ModelContext);
   if (context === undefined) {
-    throw new Error('useModel must be used within ModelProvider');
+    // Return default model context if provider is not yet initialized
+    return {
+      selectedModel: FREE_MODELS[0],
+      setSelectedModel: () => {},
+    };
   }
   return context;
 }

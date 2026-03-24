@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Settings, X, Zap } from 'lucide-react';
@@ -14,9 +14,14 @@ interface SettingsPanelProps {
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { selectedModel, setSelectedModel } = useModel();
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">

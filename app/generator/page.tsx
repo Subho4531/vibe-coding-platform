@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { PromptInput } from '@/components/prompt-input';
 import { CodeDisplay } from '@/components/code-display';
@@ -15,7 +15,12 @@ export default function GeneratorPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { selectedModel } = useModel();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleGenerateWebsite = async (prompt: string) => {
     setIsLoading(true);
