@@ -34,6 +34,8 @@ export default function Home() {
   if (!mounted || isLoggedIn) {
     return null;
   }
+
+  return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Header />
 
@@ -181,6 +183,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 const features = [
   {
