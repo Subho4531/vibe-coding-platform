@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'system',
-            content: `You are an expert Next.js and React developer. Generate complete, production-ready Next.js website code based on user prompts. 
+            content: `You are an expert Next.js and React developer. Generate concise, production-ready Next.js website code based on user prompts. 
             
 Follow these guidelines:
 - Use TypeScript
@@ -48,7 +48,6 @@ Follow these guidelines:
 - Include proper error handling
 - Make it responsive
 - Use meaningful variable and function names
-- Include comments for complex logic
 
 Return ONLY valid, executable code without markdown backticks or language identifiers.`,
           },
@@ -59,15 +58,27 @@ Return ONLY valid, executable code without markdown backticks or language identi
         ],
         stream: true,
         temperature: 0.7,
-        max_tokens: 4000,
+        max_tokens: 2000,
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
       console.error('OpenRouter API error:', error);
+      
+      // Parse error details if available
+      let errorMessage = 'Failed to generate code';
+      try {
+        const errorData = JSON.parse(error);
+        if (errorData.error?.message) {
+          errorMessage = errorData.error.message;
+        }
+      } catch (e) {
+        // Keep default error message
+      }
+      
       return NextResponse.json(
-        { error: 'Failed to generate code' },
+        { error: errorMessage },
         { status: response.status }
       );
     }

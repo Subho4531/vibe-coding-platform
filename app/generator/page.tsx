@@ -28,7 +28,14 @@ export default function GeneratorPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate code');
+        let errorMessage = 'Failed to generate code';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          // Use default error message
+        }
+        throw new Error(errorMessage);
       }
 
       const reader = response.body?.getReader();
@@ -47,7 +54,8 @@ export default function GeneratorPage() {
       }
     } catch (error) {
       console.error('Error:', error);
-      setCode(`Error generating code: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error occurred';
+      setCode(`❌ Error: ${errorMsg}\n\nTroubleshooting:\n- Check if you have API credits available\n- Visit https://openrouter.ai/settings/credits to manage your account\n- Try with a shorter prompt\n- Contact support if the issue persists`);
     } finally {
       setIsLoading(false);
       setIsStreaming(false);
