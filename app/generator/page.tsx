@@ -8,12 +8,14 @@ import { WebsitePreview } from '@/components/website-preview';
 import { SettingsPanel } from '@/components/settings-panel';
 import { Button } from '@/components/ui/button';
 import { Settings } from 'lucide-react';
+import { useModel } from '@/lib/model-context';
 
 export default function GeneratorPage() {
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const { selectedModel } = useModel();
 
   const handleGenerateWebsite = async (prompt: string) => {
     setIsLoading(true);
@@ -24,7 +26,7 @@ export default function GeneratorPage() {
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, model: selectedModel.id }),
       });
 
       if (!response.ok) {

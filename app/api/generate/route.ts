@@ -5,11 +5,18 @@ const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt } = await request.json();
+    const { prompt, model = 'meta-llama/llama-2-70b-chat' } = await request.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
         { error: 'Invalid prompt' },
+        { status: 400 }
+      );
+    }
+
+    if (!model || typeof model !== 'string') {
+      return NextResponse.json(
+        { error: 'Invalid model' },
         { status: 400 }
       );
     }
@@ -34,22 +41,11 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4-turbo',
+        model: model,
         messages: [
           {
             role: 'system',
-            content: `You are an expert Next.js and React developer. Generate concise, production-ready Next.js website code based on user prompts. 
-            
-Follow these guidelines:
-- Use TypeScript
-- Use React best practices and hooks
-- Use Tailwind CSS for styling
-- Create modular components
-- Include proper error handling
-- Make it responsive
-- Use meaningful variable and function names
-
-Return ONLY valid, executable code without markdown backticks or language identifiers.`,
+            content: `Generate concise Next.js React code from user prompts. Use TypeScript, Tailwind CSS, and best practices. Return ONLY valid code without markdown.`,
           },
           {
             role: 'user',
@@ -58,7 +54,7 @@ Return ONLY valid, executable code without markdown backticks or language identi
         ],
         stream: true,
         temperature: 0.7,
-        max_tokens: 2000,
+        max_tokens: 1000,
       }),
     });
 

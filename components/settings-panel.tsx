@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Settings, X } from 'lucide-react';
+import { Settings, X, Zap } from 'lucide-react';
+import { useModel, FREE_MODELS } from '@/lib/model-context';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface SettingsPanelProps {
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
+  const { selectedModel, setSelectedModel } = useModel();
 
   if (!isOpen) return null;
 
@@ -64,6 +66,52 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 Get your free API key at <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">openrouter.ai</a>
               </p>
             </div>
+          </div>
+
+          <Separator className="bg-border" />
+
+          {/* AI Model Selection */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-primary" />
+              <h3 className="font-semibold text-foreground">AI Model</h3>
+            </div>
+            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+              <p className="text-sm text-green-400 font-medium">Recommended: Use free models</p>
+              <p className="text-xs text-green-300/80 mt-1">
+                Free models work without any API credits or account. Perfect for getting started!
+              </p>
+            </div>
+            
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {FREE_MODELS.map((model) => (
+                <button
+                  key={model.id}
+                  onClick={() => setSelectedModel(model)}
+                  className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
+                    selectedModel.id === model.id
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-primary/50 bg-background'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">{model.name}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{model.description}</p>
+                    </div>
+                    {model.isFree && (
+                      <span className="text-xs font-semibold px-2 py-1 rounded bg-green-500/20 text-green-400">
+                        FREE
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <p className="text-xs text-muted-foreground mt-4">
+              Current: <span className="font-semibold text-primary">{selectedModel.name}</span>
+            </p>
           </div>
 
           <Separator className="bg-border" />
