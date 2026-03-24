@@ -8,6 +8,7 @@ interface CodeEditorProps {
   defaultValue?: string;
   language?: string;
   onChange?: (value: string | undefined) => void;
+  onCursorChange?: (position: { line: number; column: number }) => void;
   readOnly?: boolean;
 }
 
@@ -15,6 +16,7 @@ export function CodeEditor({
   defaultValue = '',
   language = 'typescript',
   onChange,
+  onCursorChange,
   readOnly = false,
 }: CodeEditorProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -24,11 +26,11 @@ export function CodeEditor({
     setIsMounted(true);
   }, []);
 
-  const handleEditorMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    editorRef.current = editor;
+  const handleEditorMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    editorRef.current = editorInstance;
 
-    // Set up dark theme
-    monaco.editor.defineTheme('custom-dark', {
+    // Set up VS Code dark theme
+    monaco.editor.defineTheme('vscode-dark', {
       base: 'vs-dark',
       inherit: true,
       rules: [
@@ -36,18 +38,31 @@ export function CodeEditor({
         { token: 'string', foreground: 'CE9178' },
         { token: 'number', foreground: 'B5CEA8' },
         { token: 'keyword', foreground: '569CD6' },
+        { token: 'type', foreground: '4EC9B0' },
+        { token: 'function', foreground: 'DCDCAA' },
+        { token: 'variable', foreground: '9CDCFE' },
       ],
       colors: {
-        'editor.background': '#1a1a2e',
-        'editor.foreground': '#e0e0e0',
-        'editor.lineNumbersBackground': '#16213e',
-        'editor.lineNumbersForeground': '#6c757d',
+        'editor.background': '#1e1e1e',
+        'editor.foreground': '#d4d4d4',
+        'editor.lineHighlightBackground': '#2a2d2e',
+        'editorLineNumber.foreground': '#858585',
+        'editorLineNumber.activeForeground': '#c6c6c6',
         'editor.selectionBackground': '#264f78',
-        'editorCursor.foreground': '#00d4ff',
+        'editorCursor.foreground': '#aeafad',
+        'editor.inactiveSelectionBackground': '#3a3d41',
       },
     });
 
-    monaco.editor.setTheme('custom-dark');
+    monaco.editor.setTheme('vscode-dark');
+
+    // Listen for cursor position changes
+    editorInstance.onDidChangeCursorPosition((e) => {
+      onCursorChange?.({
+        line: e.position.lineNumber,
+        column: e.position.column,
+      });
+    });
   };
 
   if (!isMounted) {
@@ -66,20 +81,26 @@ export function CodeEditor({
       onChange={onChange}
       onMount={handleEditorMount}
       options={{
-        minimap: { enabled: false },
+        minimap: { enabled: true, scale: 1 },
         scrollBeyondLastLine: false,
         readOnly: readOnly,
-        fontSize: 14,
-        lineHeight: 1.6,
-        fontFamily: 'Fira Code, monospace',
+        fontSize: 13,
+        lineHeight: 20,
+        fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
+        fontLigatures: true,
         formatOnPaste: true,
         formatOnType: true,
         autoIndent: 'advanced',
         tabSize: 2,
-        wordWrap: 'on',
+        wordWrap: 'off',
         automaticLayout: true,
+        renderLineHighlight: 'all',
+        cursorBlinking: 'blink',
+        cursorSmoothCaretAnimation: 'on',
+        smoothScrolling: true,
+        padding: { top: 8 },
       }}
-      theme="custom-dark"
+      theme="vscode-dark"
     />
   );
 }
