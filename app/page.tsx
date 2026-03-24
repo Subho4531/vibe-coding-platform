@@ -1,13 +1,39 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Zap, Code2, Sparkles, Rocket, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Home() {
-  return (
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      
+      if (user) {
+        setIsLoggedIn(true);
+        router.push('/dashboard');
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (!mounted || isLoggedIn) {
+    return null;
+  }
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Header />
 
@@ -36,21 +62,23 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-            <Link href="/generator">
+            <Link href="/ide">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 text-base h-12">
                 <Zap className="w-5 h-5" />
-                Start Creating
+                Launch IDE
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-border hover:bg-card text-base h-12"
-            >
-              Watch Demo
-            </Button>
+            <Link href="/auth/sign-up">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-border hover:bg-card text-base h-12"
+              >
+                Sign Up Free
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
