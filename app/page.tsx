@@ -9,6 +9,48 @@ import { Button } from '@/components/ui/button';
 import { Zap, Code2, Sparkles, Rocket, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
+const features = [
+  {
+    title: 'AI-Powered Generation',
+    description: 'Advanced AI models understand your requirements and generate clean, production-ready code.',
+    icon: <Sparkles className="w-6 h-6 text-primary" />,
+  },
+  {
+    title: 'Next.js & React',
+    description: 'Built on modern frameworks with TypeScript, Tailwind CSS, and best practices.',
+    icon: <Code2 className="w-6 h-6 text-primary" />,
+  },
+  {
+    title: 'Real-time Streaming',
+    description: 'Watch your code being generated in real-time with instant feedback and updates.',
+    icon: <Zap className="w-6 h-6 text-primary" />,
+  },
+];
+
+const steps = [
+  {
+    title: 'Describe Your Vision',
+    description: 'Write a simple description of the website you want to build',
+  },
+  {
+    title: 'AI Creates Code',
+    description: 'Our AI generates complete, working Next.js code instantly',
+  },
+  {
+    title: 'Deploy & Customize',
+    description: 'Copy the code and deploy it, then customize as needed',
+  },
+];
+
+const benefits = [
+  'Save hours of development time on repetitive tasks',
+  'Get production-ready code you can deploy immediately',
+  'Learn best practices from AI-generated code',
+  'Iterate faster with instant code generation',
+  'No more boilerplate writing',
+  'Scale your productivity exponentially',
+];
+
 export default function Home() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -183,46 +225,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-const features = [
-  {
-    title: 'AI-Powered Generation',
-    description: 'Advanced AI models understand your requirements and generate clean, production-ready code.',
-    icon: <Sparkles className="w-6 h-6 text-primary" />,
-  },
-  {
-    title: 'Next.js & React',
-    description: 'Built on modern frameworks with TypeScript, Tailwind CSS, and best practices.',
-    icon: <Code2 className="w-6 h-6 text-primary" />,
-  },
-  {
-    title: 'Real-time Streaming',
-    description: 'Watch your code being generated in real-time with instant feedback and updates.',
-    icon: <Zap className="w-6 h-6 text-primary" />,
-  },
-];
-
-const steps = [
-  {
-    title: 'Describe Your Vision',
-    description: 'Write a simple description of the website you want to build',
-  },
-  {
-    title: 'AI Creates Code',
-    description: 'Our AI generates complete, working Next.js code instantly',
-  },
-  {
-    title: 'Deploy & Customize',
-    description: 'Copy the code and deploy it, then customize as needed',
-  },
-];
-
-const benefits = [
-  'Save hours of development time on repetitive tasks',
-  'Get production-ready code you can deploy immediately',
-  'Learn best practices from AI-generated code',
-  'Iterate faster with instant code generation',
-  'No more boilerplate writing',
-  'Scale your productivity exponentially',
-];

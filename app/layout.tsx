@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased dark">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ModelProvider>
